@@ -1,0 +1,26 @@
+{
+    "name": "virlatinus/php-test",
+    "description": "Test PHP Project",
+    "type": "project",
+    "minimum-stability": "stable",
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "Virlatinus\\PhpTest\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Werner García",
+            "email": "werner.garcia@gmail.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {},
+    "scripts": {
+        "serve": "@php -S 0.0.0.0:8080 index.php"
+    },
+    "config": {
+        "process-timeout": 3600
+    }
+}
