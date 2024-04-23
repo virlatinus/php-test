@@ -18,6 +18,7 @@
     "require": {},
     "require-dev": {},
     "scripts": {
+        "start": "@php index.php",
         "serve": "@php -S 0.0.0.0:8080 index.php"
     },
     "config": {
