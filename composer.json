@@ -6,7 +6,8 @@
     "license": "proprietary",
     "autoload": {
         "psr-4": {
-            "Virlatinus\\PhpTest\\": "src/"
+            "Virlatinus\\PhpTest\\": "src/",
+            "tests\\": "tests/"
         }
     },
     "authors": [
@@ -15,13 +16,18 @@
             "email": "werner.garcia@gmail.com"
         }
     ],
-    "require": {},
-    "require-dev": {},
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    },
     "scripts": {
         "start": "@php index.php",
+        "test": "@php vendor/bin/phpunit tests",
         "serve": "@php -S 0.0.0.0:8080 index.php"
     },
     "config": {
         "process-timeout": 3600
-    }
+    },
+  "require": {
+    "ext-json": "*"
+  }
 }
