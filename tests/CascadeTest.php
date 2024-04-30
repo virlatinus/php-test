@@ -2,57 +2,50 @@
 
 namespace tests;
 
-use JsonException;
 use PHPUnit\Framework\TestCase;
 
-function get_maxlen($words) {
+function get_maxlen($words): int
+{
     return array_reduce($words, static function ($max, $word) {
         return (strlen($word) > $max) ? strlen($word) : $max;
     }, 0);
 }
 
-/**
- * @throws JsonException
- */
 function cascade(string $s, int $gap): string {
     if (empty($s)) {
         return '';
     }
 
-/*
-T__c__b___
-_h__o__u__
-__e__d__g_
-______i___
-_______n__
-________g_
-_________s
-*/
     $words = preg_split('/\s+/u', $s);
     $maxlen = get_maxlen($words);
 
     // Create an array of length maxlen and push letters of each word
     // followed by the gap. Fill empty letters with underscores
-
     $lines = [];
     for($i = 0; $i < $maxlen; $i++) {
         // add initial underscores
         $lines[$i] = str_repeat('_', $i);
+
+        // add letters or underscores
         $line = '';
         foreach ($words as $word) {
             $line .= $word[$i] ?? '_';
         }
+
+        // remove underscores at the end (we'll add them later)
         $line = rtrim($line, '_');
+
+        // join letters with gap
         $lines[$i] .= implode(str_repeat('_', $gap), str_split($line));
     }
 
-    // find the longest line and add underscores to the end of the rest
+    // find the longest line and add underscores to the end of the other lines
     $maxlen = get_maxlen($lines);
     foreach ($lines as &$line) {
         $line .= str_repeat('_', $maxlen - strlen($line));
     }
 
-    return implode(PHP_EOL, $lines);
+    return implode("\r\n", $lines);
 }
 
 class CascadeTest extends TestCase
