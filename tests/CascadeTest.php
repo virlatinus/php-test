@@ -9,6 +9,7 @@ function cascade(string $s, int $gap): string {
         return "";
     }
 
+    // create matrix of letters
     $ls = [];
     foreach (preg_split('/\s+/', $s) as $w) {
         $ls[] = str_split($w);
@@ -29,27 +30,34 @@ function cascade(string $s, int $gap): string {
     // AB           AX
     // XYZ    =>    BY
     //               Z
-    $ls = rotate($ls, $gap);
+    $ls = rotate($ls);
 
-    echo "rotated:\n";
-    echo json_encode($ls, JSON_PRETTY_PRINT) . PHP_EOL;
+/*
+T__c__b___
+_h__o__u__
+__e__d__g_
+______i___
+_______n__
+________g_
+_________s
+*/
+    $i = 0;
+    $j = count($ls);
+    $str = implode(PHP_EOL, array_map(static function ($l) use (&$i, &$j, $gap) {
+        return str_repeat('_', $i++) . implode(str_repeat('_', $gap), $l)
+            . str_repeat('_', --$j);
+    }, $ls));
 
+    echo "\nArray:\n\n" . implode(PHP_EOL, array_map(static function ($l)  {
+        return implode($l);
+    }, $ls)) . PHP_EOL;
 
+    echo "\nResult:\n\n" . $str . PHP_EOL;
 
-    $r = [];
-    foreach($ls as $w) {
-        $r[] = implode($w);
-    }
-
-    $output = implode(str_repeat('_', $gap), $r);
-
-    var_dump($output);
-    var_dump($m);
-
-    return implode(PHP_EOL, str_split($output, $split_length = $m));
+    return $str;
 }
 
-function rotate($ws, $n) {
+function rotate(array $ws): array {
     $a = [];
     // find the longest word
     $m = 0;
@@ -61,11 +69,8 @@ function rotate($ws, $n) {
 
     // fill empty spaces
     foreach($ws as $i => $w) {
-        //   for ($k = 0, $i=0; $k < $m; $k++, $i++) {
-        //     if (!isset($ws[$k])) $w = str_repeat('_', $m);
-        //    else $w = $ws[$k];
         for($j = 0; $j < $m; $j++) {
-            if (!isset($w[$j])) {
+            if (!isset($w[$j]) && $i < $m) {
                 $a[$j][$i] = '_';
             }
             else {
@@ -79,19 +84,24 @@ function rotate($ws, $n) {
 
 class CascadeTest extends TestCase
 {
-    public function test_empty_string_gap_2()
+//    public static function assertSame($expected, $actual, string $message = ''): void
+//    {
+//        printf("*************************\nExpected:\n\n%s\n\nActual:\n\n%s\n\n", $expected, $actual);
+//    }
+
+    public function test_empty_string_gap_2(): void
     {
-        $this->assertSame("", cascade("", 2));
+        self::assertSame("", cascade("", 2));
     }
 
-    public function test_A_gap_2()
+    public function test_A_gap_2(): void
     {
-        $this->assertSame("A", cascade("A", 2));
+        self::assertSame("A", cascade("A", 2));
     }
 
-    public function test_AB_gap_2()
+    public function test_AB_gap_2(): void
     {
-        $this->assertSame(
+        self::assertSame(
             trim(
                 "
 A_
@@ -102,9 +112,9 @@ _B
         );
     }
 
-    public function test_ABC_gap_2()
+    public function test_ABC_gap_2(): void
     {
-        $this->assertSame(
+        self::assertSame(
             trim(
                 "
 A__
@@ -116,9 +126,9 @@ __C
         );
     }
 
-    public function test_ABCD_gap_2()
+    public function test_ABCD_gap_2(): void
     {
-        $this->assertSame(
+        self::assertSame(
             trim(
                 "
 A___
@@ -131,9 +141,9 @@ ___D
         );
     }
 
-    public function test_AB_XYZ_gap_2()
+    public function test_AB_XYZ_gap_2(): void
     {
-        $this->assertSame(
+        self::assertSame(
             trim(
                 "
 A__X__
@@ -145,9 +155,9 @@ _____Z
         );
     }
 
-    public function test_The_codings_bug_gap_2()
+    public function test_The_codings_bug_gap_2(): void
     {
-        $this->assertSame(
+        self::assertSame(
             trim(
                 "
 T__c__b___
@@ -163,9 +173,9 @@ _________s
         );
     }
 
-    public function test_The_coding_bug_gap_2()
+    public function test_The_coding_bug_gap_2(): void
     {
-        $this->assertSame(
+        self::assertSame(
             trim(
                 "
 T__c__b__
@@ -180,9 +190,9 @@ ________g
         );
     }
 
-    public function test_The_coding_bug_gap_3()
+    public function test_The_coding_bug_gap_3(): void
     {
-        $this->assertSame(
+        self::assertSame(
             trim(
                 "
 T___c___b__
@@ -197,9 +207,9 @@ _________g_
         );
     }
 
-    public function test_The_coding_bug_gap_4()
+    public function test_The_coding_bug_gap_4(): void
     {
-        $this->assertSame(
+        self::assertSame(
             trim(
                 "
 T____c____b__
@@ -214,9 +224,9 @@ __________g__
         );
     }
 
-    public function test_Gabriel_Garcia_Marquez_gap_3()
+    public function test_Gabriel_Garcia_Marquez_gap_3(): void
     {
-        $this->assertSame(
+        self::assertSame(
             trim(
                 "
 G___G___M______
@@ -232,9 +242,9 @@ ______l_______z
         );
     }
 
-    public function test_Everywhere_in_one_gap_2()
+    public function test_Everywhere_in_one_gap_2(): void
     {
-        $this->assertSame(
+        self::assertSame(
             trim(
                 "
 E__i__o___
@@ -253,9 +263,9 @@ _________e
         );
     }
 
-    public function test_Everywhere_in_one_gap_1()
+    public function test_Everywhere_in_one_gap_1(): void
     {
-        $this->assertSame(
+        self::assertSame(
             trim(
                 "
 E_i_o_____
@@ -274,9 +284,9 @@ _________e
         );
     }
 
-    public function test_Everywhere_in_one_gap_0()
+    public function test_Everywhere_in_one_gap_0(): void
     {
-        $this->assertSame(
+        self::assertSame(
             trim(
                 "
 Eio_______
